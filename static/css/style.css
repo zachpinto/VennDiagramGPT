@@ -1,0 +1,17 @@
+#customizationBox {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+#customizationBox input[type="radio"]:checked + label {
+    background-color: green;
+    color: white;
+}
+
+#setTitleBoxes input[type="text"] {
+    display: block;
+    margin-top: 10px;
+}
