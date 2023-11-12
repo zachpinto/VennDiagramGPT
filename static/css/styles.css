@@ -127,3 +127,21 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#vennDiagramContainer {
+    position: fixed;
+    right: 20px;
+    top: 350px;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 550px;
+    text-align: center;
+    background-color: #fff;
+}
+
