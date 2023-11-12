@@ -14,3 +14,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    var radios = document.querySelectorAll('input[name="setCount"]');
+    radios.forEach(function(radio) {
+        radio.addEventListener('change', handleRadioChange);
+    });
+});
+
+function handleRadioChange(event) {
+    var count = event.target.value;
+    var textFieldsContainer = document.getElementById('textFields');
+    textFieldsContainer.innerHTML = ''; // Clear existing fields
+
+    for (var i = 0; i < count; i++) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Title for set ${i + 1}`;
+        input.className = 'form-control my-2'; // Bootstrap class for styling
+        textFieldsContainer.appendChild(input);
+    }
+}

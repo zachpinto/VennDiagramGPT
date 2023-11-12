@@ -57,3 +57,8 @@
 .tgl-light:checked + .tgl-btn:after {
   left: 2.2em;
 }
+
+#textFields input[type="text"] {
+    width: 100%; /* Full width */
+    height: 40px; /* Short height */
+}
