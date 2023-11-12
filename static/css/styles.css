@@ -3,9 +3,6 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
 }
 
 h1 {
@@ -15,12 +12,16 @@ h1 {
 }
 
 .input-box {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 400px; /* Fixed width */
+    height: auto;
     background-color: #fff;
     padding: 40px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 8px;
-    margin-top: 50px; /* Space below the title */
 }
 
 .radio-button-container {
