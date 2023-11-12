@@ -90,3 +90,85 @@ function generateVennDiagram(setCount) {
     // Append the SVG to the container
     vennDiagramContainer.appendChild(svg);
 }
+
+function getTextPositions(setCount) {
+  // Define the center positions for each circle in the Venn diagrams
+  const positions = {
+    2: [
+      { x: 150, y: 100 }, // Center of circle A
+      { x: 250, y: 100 }  // Center of circle B
+    ],
+    3: [
+      { x: 150, y: 75 },  // Center of circle A
+      { x: 250, y: 75 },  // Center of circle B
+      { x: 200, y: 150 }  // Center of circle C
+    ],
+    4: [
+      { x: 125, y: 125 }, // Center of circle A
+      { x: 275, y: 125 }, // Center of circle B
+      { x: 125, y: 275 }, // Center of circle C
+      { x: 275, y: 275 }  // Center of circle D
+    ]
+  };
+
+  return positions[setCount];
+}
+
+function updateVennDiagram(setCount) {
+    // ... existing code to generate the Venn diagram ...
+
+    // Clear any existing text
+    let textElements = vennDiagramContainer.querySelectorAll('text');
+    textElements.forEach(text => text.remove());
+
+    const textPositions = getTextPositions(setCount);
+
+    // Add new text based on the current number of sets
+    for (let i = 0; i < setCount; i++) {
+        let input = document.querySelector(`input[name="setTitle${i}"]`);
+        let text = document.createElementNS(svgNS, "text");
+        text.textContent = input.value;
+        text.setAttribute('x', calculateXPosition(i, setCount)); // You need to define this function
+        text.setAttribute('y', calculateYPosition(i, setCount)); // You need to define this function
+        text.setAttribute('font-size', '10'); // Adjust as needed
+        text.setAttribute('text-anchor', 'middle'); // Center the text
+        text.setAttribute('dominant-baseline', 'middle'); // Center vertically
+        text.setAttribute('fill', '#333'); // Text color
+        svg.appendChild(text);
+    }
+}
+
+function calculateXPosition(index, setCount) {
+    // Calculate the x position based on the index and setCount
+    // Placeholder function, implement logic based on Venn diagram layout
+    return 150; // Example position
+}
+
+function calculateYPosition(index, setCount) {
+    // Calculate the y position based on the index and setCount
+    // Placeholder function, implement logic based on Venn diagram layout
+    return 150; // Example position
+}
+
+// Event listener for the form submission
+document.getElementById('inputForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const setCount = document.querySelector('input[name="setCount"]:checked').value;
+    updateVennDiagram(setCount);
+});
+
+// Event listeners for the input fields
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all input elements
+    let inputs = document.querySelectorAll('#textFields input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function() {
+            // Update the text in the Venn diagram
+            let textElement = vennDiagramContainer.querySelector(`text:nth-child(${index + 1})`);
+            if (textElement) {
+                textElement.textContent = input.value;
+            }
+        });
+    });
+});
+
