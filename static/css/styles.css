@@ -1,73 +1,61 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px; /* Adjust as needed */
+    color: #333;
+}
+
 .input-box {
-    position: fixed;
-    left: 10px;
-    top: 50%; /* Adjust to position lower on the screen */
-    transform: translateY(-50%);
-    border: 1px solid #ddd;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 400px; /* Fixed width */
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    margin-top: 50px; /* Space below the title */
+}
+
+.radio-button-container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .radio-button {
-    margin-bottom: 20px; /* Space between radio buttons */
+    text-align: center;
 }
 
 .radio-number {
-    display: block;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
-.input-box label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-#setTitleBoxes input[type="text"] {
-    display: block;
-    margin-top: 10px;
-}
-
-/* Toggle button styles */
-.tgl {
-  display: none;
-}
-
-
-
-.tgl-light + .tgl-btn {
-  background: #f0f0f0;
-  border-radius: 2em;
-  padding: 2px;
-  transition: all .4s ease;
-  display: inline-block;
-  width: 4em;
-  height: 2em;
-  position: relative;
-  cursor: pointer;
-}
-
-.tgl-light + .tgl-btn:after {
-  position: absolute;
-  content: '';
-  width: 1.6em;
-  height: 1.6em;
-  border-radius: 50%;
-  background: #fff;
-  transition: all .2s ease;
-  top: 0.2em;
-  left: 0.2em;
+    color: #333;
 }
 
 .tgl-light:checked + .tgl-btn {
-  background: #9FD6AE;
-}
-
-.tgl-light:checked + .tgl-btn:after {
-  left: 2.2em;
+    background: #4CAF50; /* A green shade for active state */
 }
 
 #textFields input[type="text"] {
-    width: 100%; /* Full width */
-    height: 40px; /* Short height */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4CAF50; /* Same as the active state color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
 }
