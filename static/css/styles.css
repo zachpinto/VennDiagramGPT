@@ -13,15 +13,16 @@ h1 {
 
 .input-box {
     position: fixed;
-    left: 10px;
-    top: 50%;
+    left: 20px;
+    top: 35%;
     transform: translateY(-50%);
-    width: 400px; /* Fixed width */
-    height: auto;
+    width: 450px; /* Fixed width */
+    height: 325px;
     background-color: #fff;
     padding: 40px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 8px;
+    overflow: auto;
 }
 
 .radio-button-container {
