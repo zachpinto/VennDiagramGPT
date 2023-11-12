@@ -14,15 +14,23 @@ h1 {
 .input-box {
     position: fixed;
     left: 20px;
-    top: 350px;
+    top: 45%;
     transform: translateY(-50%);
     width: 400px; /* Fixed width */
-    height: 500px;
+    height: 600px;
     background-color: #fff;
     padding: 30px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 8px;
     overflow: auto;
+}
+
+.radio-instructions {
+    font-size: 20px; /* Smaller font size */
+    font-style: italic; /* Italicize text */
+    color: #666; /* Gray color, similar to the numbers */
+    text-align: center; /* Center align */
+    margin-bottom: 20px; /* Space above the radio buttons */
 }
 
 /* Custom toggle button styles */
