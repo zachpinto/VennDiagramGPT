@@ -19,23 +19,74 @@ h1 {
     width: 400px; /* Fixed width */
     height: 500px;
     background-color: #fff;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 8px;
     overflow: auto;
 }
 
+/* Custom toggle button styles */
+.tgl-light {
+    display: none;
+}
+
+.tgl-light + .tgl-btn {
+    background: #f0f0f0;
+    border-radius: 2em;
+    padding: 2px;
+    transition: all .4s ease;
+    display: inline-block;
+    width: 4em;
+    height: 2em;
+    position: relative;
+    cursor: pointer;
+}
+
+.tgl-light + .tgl-btn:after {
+    content: '';
+    position: absolute;
+    width: 1.6em;
+    height: 1.6em;
+    border-radius: 50%;
+    background: #fff;
+    transition: all .2s ease;
+    top: 0.2em;
+    left: 0.2em; /* Initial position of the circle */
+}
+
+.tgl-light:checked + .tgl-btn:after {
+    left: calc(100% - 1.8em); /* Move circle to the right when checked */
+}
+
+/* Position the numbers */
+.radio-button {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.radio-number {
+    display: block;
+    color: #666; /* Gray color for the numbers */
+    margin-bottom: 5px;
+}
+
 .radio-button-container {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .radio-button {
     text-align: center;
+    flex-grow: 2;
 }
 
 .radio-number {
-    color: #333;
+    display: block;
+    color: #666;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .tgl-light:checked + .tgl-btn {

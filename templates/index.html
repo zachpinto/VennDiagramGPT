@@ -10,29 +10,28 @@
 <body>
     <h1>Welcome to the GPT-4-based Venn Diagram Generator</h1>
         <div class="input-box">
-        <form id="inputForm">
-            <div class="radio-button-container">
-                <div class="radio-button">
-                    <span class="radio-number">2</span>
-                    <input type="radio" id="set2" name="setCount" value="2" class="tgl-light">
-                    <label class="tgl-btn" for="set2"></label>
+            <form id="inputForm">
+                <div class="radio-button-container">
+                    <div class="radio-button">
+                        <span class="radio-number">2</span>
+                        <input type="radio" id="set2" name="setCount" value="2" class="tgl-light">
+                        <label class="tgl-btn" for="set2"></label>
+                    </div>
+                    <div class="radio-button">
+                        <span class="radio-number">3</span>
+                        <input type="radio" id="set3" name="setCount" value="3" class="tgl-light">
+                        <label class="tgl-btn" for="set3"></label>
+                    </div>
+                    <div class="radio-button">
+                        <span class="radio-number">4</span>
+                        <input type="radio" id="set4" name="setCount" value="4" class="tgl-light">
+                        <label class="tgl-btn" for="set4"></label>
+                    </div>
                 </div>
-                <div class="radio-button">
-                    <span class="radio-number">3</span>
-                    <input type="radio" id="set3" name="setCount" value="3" class="tgl-light">
-                    <label class="tgl-btn" for="set3"></label>
-                </div>
-                <div class="radio-button">
-                    <span class="radio-number">4</span>
-                    <input type="radio" id="set4" name="setCount" value="4" class="tgl-light">
-                    <label class="tgl-btn" for="set4"></label>
-                </div>
+                <div id="textFields"></div>
+                <button type="submit">Generate Venn Diagram</button>
+            </form>
         </div>
-        <div id="textFields"></div>
-        <button type="submit">Generate Venn Diagram</button>
-    </form>
-</div>
-
     <script src="{{ url_for('static', filename='js/venn-diagram.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
