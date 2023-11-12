@@ -40,75 +40,53 @@ document.addEventListener('DOMContentLoaded', function() {
     var radios = document.querySelectorAll('input[name="setCount"]');
     radios.forEach(function(radio) {
         radio.addEventListener('change', function(event) {
-            drawVennDiagram(parseInt(event.target.value));
+            generateVennDiagram(parseInt(event.target.value));
         });
     });
 });
 
-function drawVennDiagram(numberOfSets) {
-    // Clear the previous diagram
-    var vennDiagramContainer = document.getElementById('vennDiagramContainer');
-    vennDiagramContainer.innerHTML = '';
+function generateVennDiagram(setCount) {
+    const colors = [
+        "rgba(255, 192, 203, 0.5)", // Light Pink
+        "rgba(173, 216, 230, 0.5)", // Light Blue
+        "rgba(144, 238, 144, 0.5)", // Light Green
+        "rgba(255,242,146,0.5)"    // Light Orange
+    ];
+    const vennDiagramContainer = document.getElementById('vennDiagramContainer');
+    vennDiagramContainer.innerHTML = ''; // Clear the container
 
-    // Define sets
-    var sets = createSets(numberOfSets);
+    // Create the SVG element
+    const svgNS = "http://www.w3.org/2000/svg";
+    let svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute('width', '300');
+    svg.setAttribute('height', '300');
+    svg.setAttribute('viewBox', '0 0 300 300');
 
-    // Create the Venn diagram
-    var chart = venn.VennDiagram();
-    d3.select(vennDiagramContainer).datum(sets).call(chart);
+    // Define the positions and radii for the circles
+    const circleConfigs = {
+        2: [{ cx: 110, cy: 150, r: 80 },
+            { cx: 190, cy: 150, r: 80 }],
 
-    // Apply custom colors if necessary
-    // ...
+        3: [{ cx: 110, cy: 120, r: 80 },
+            { cx: 190, cy: 120, r: 80 },
+            { cx: 150, cy: 190, r: 80 }],
+
+        4: [{ cx: 150, cy: 110, r: 60 },
+            { cx: 110, cy: 150, r: 60 },
+            { cx: 150, cy: 190, r: 60 },
+            { cx: 190, cy: 150, r: 60 }]
+    };
+
+    // Add circles to the SVG element
+    circleConfigs[setCount].forEach((circle, index) => {
+        let circleEl = document.createElementNS(svgNS, "circle");
+        circleEl.setAttribute('cx', circle.cx);
+        circleEl.setAttribute('cy', circle.cy);
+        circleEl.setAttribute('r', circle.r);
+        circleEl.setAttribute('fill', colors[index % colors.length]);
+        svg.appendChild(circleEl);
+    });
+
+    // Append the SVG to the container
+    vennDiagramContainer.appendChild(svg);
 }
-
-function createSets(numberOfSets) {
-    // This function should return an array of sets and their relationships
-    // The content will depend on the number of sets and how they overlap
-    // Here's an example for 2 sets:
-    if (numberOfSets === 2) {
-        return [
-            {sets: ['A'], size: 12},
-            {sets: ['B'], size: 12},
-            {sets: ['A','B'], size: 4}
-        ];
-    }
-
-    if (numberOfSets === 3) {
-        return [
-            {sets: ['A'], size: 12},
-            {sets: ['B'], size: 12},
-            {sets: ['C'], size: 12},
-            {sets: ['A','B'], size: 4},
-            {sets: ['A','C'], size: 4},
-            {sets: ['B','C'], size: 4},
-            {sets: ['A','B','C'], size: 2}
-        ];
-    }
-
-    if (numberOfSets === 4) {
-        return [
-            {sets: ['A'], size: 12},
-            {sets: ['B'], size: 12},
-            {sets: ['C'], size: 12},
-            {sets: ['D'], size: 12},
-            {sets: ['A','B'], size: 4},
-            {sets: ['A','C'], size: 4},
-            {sets: ['A','D'], size: 4},
-            {sets: ['B','C'], size: 4},
-            {sets: ['B','D'], size: 4},
-            {sets: ['C','D'], size: 4},
-            {sets: ['A','B','C'], size: 1},
-            {sets: ['A','B','D'], size: 1},
-            {sets: ['A','C','D'], size: 1},
-            {sets: ['B','C','D'], size: 1},
-            {sets: ['A','B','C','D'], size: 1}
-        ];
-    }
-    // Extend the logic for 3 and 4 sets as needed
-
-    // You'll need to write the logic to generate the sets and their sizes/intersections
-    // This is a non-trivial task and would be unique to your application
-}
-
-// Please note that this code is simplified and assumes the use of the venn.js library.
-// The actual implementation may vary depending on the specific requirements and how the venn.js library is used.

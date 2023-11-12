@@ -3,42 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VennDiagramGPT</title>
+    <title>Venn Diagram Generator</title>
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/venn.js"></script>
+    <script src="{{ url_for('static', filename='js/venn-diagram.js') }}"></script>
 </head>
 <body>
-    <h1>Welcome to the GPT-4-based Venn Diagram Generator</h1>
-        <div class="input-box">
-            <form id="inputForm">
-                <p class="radio-instructions">How many sets do you want in your Venn Diagram?</p>
-                <div class="radio-button-container">
-                    <div class="radio-button">
-                        <span class="radio-number">2</span>
-                        <input type="radio" id="set2" name="setCount" value="2" class="tgl-light">
-                        <label class="tgl-btn" for="set2"></label>
-                    </div>
-                    <div class="radio-button">
-                        <span class="radio-number">3</span>
-                        <input type="radio" id="set3" name="setCount" value="3" class="tgl-light">
-                        <label class="tgl-btn" for="set3"></label>
-                    </div>
-                    <div class="radio-button">
-                        <span class="radio-number">4</span>
-                        <input type="radio" id="set4" name="setCount" value="4" class="tgl-light">
-                        <label class="tgl-btn" for="set4"></label>
-                    </div>
-                </div>
-                <div id="textFields"></div>
-                <button type="submit">Generate Venn Diagram</button>
-            </form>
-        </div>
-        <div id="vennDiagramContainer">
-
-        </div>
-    <script src="{{ url_for('static', filename='js/venn-diagram.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <h1>Welcome to the Venn Diagram Generator</h1>
+    <div class="input-box">
+        <form id="inputForm">
+            <p class="radio-instructions">How many sets do you want in your Venn Diagram?</p>
+            <div class="radio-button-container">
+                <label class="radio-button">
+                    <span class="radio-number">2</span>
+                    <input type="radio" id="set2" name="setCount" value="2" class="tgl tgl-light">
+                    <label for="set2" class="tgl-btn"></label>
+                </label>
+                <label class="radio-button">
+                    <span class="radio-number">3</span>
+                    <input type="radio" id="set3" name="setCount" value="3" class="tgl tgl-light">
+                    <label for="set3" class="tgl-btn"></label>
+                </label>
+                <label class="radio-button">
+                    <span class="radio-number">4</span>
+                    <input type="radio" id="set4" name="setCount" value="4" class="tgl tgl-light">
+                    <label for="set4" class="tgl-btn"></label>
+                </label>
+            </div>
+            <div id="textFields"></div>
+            <button type="button" onclick="generateVennDiagram()">Generate Venn Diagram</button>
+        </form>
+    </div>
+    <div id="vennDiagramContainer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
