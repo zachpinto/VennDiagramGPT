@@ -3,18 +3,32 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
-h1 {
-    text-align: center;
+h1#title {
+    position: fixed; /* Fixed positioning relative to the viewport */
+    top: 2%; /* Adjust as necessary to position above the input box */
+    left: 55px; /* Align with the input box */
     color: #333;
+    font-size: 50px;
+    margin: 0;
+}
+
+h2#subtitle {
+    position: fixed; /* Fixed positioning relative to the viewport */
+    top: 11%; /* Position it just below the title */
+    left: 65px; /* Align with the input box */
+    color: #666;
+    font-size: 22px;
+    margin: 0;
 }
 
 .input-box {
     z-index: 2;
     position: fixed;
     left: 50px;
-    top: 45%;
+    top: 55%;
     transform: translateY(-50%);
     width: 400px;
     height: 600px;
