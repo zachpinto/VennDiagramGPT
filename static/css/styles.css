@@ -14,10 +14,10 @@ h1 {
 .input-box {
     position: fixed;
     left: 20px;
-    top: 35%;
+    top: 350px;
     transform: translateY(-50%);
-    width: 450px; /* Fixed width */
-    height: 325px;
+    width: 400px; /* Fixed width */
+    height: 500px;
     background-color: #fff;
     padding: 40px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
