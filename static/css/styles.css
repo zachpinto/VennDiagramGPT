@@ -42,10 +42,17 @@ h1 {
     background: #4CAF50; /* A green shade for active state */
 }
 
-#textFields input[type="text"] {
+#textFields textarea {
+    width: 100%; /* Full width */
+    height: auto; /* Height adjusts to content */
+    min-height: 40px; /* Minimum height for two lines */
     border: 1px solid #ddd;
     border-radius: 4px;
+    padding: 5px;
+    box-sizing: border-box;
+    resize: vertical; /* Allow vertical resizing only */
 }
+
 
 button {
     background-color: #4CAF50; /* Same as the active state color */

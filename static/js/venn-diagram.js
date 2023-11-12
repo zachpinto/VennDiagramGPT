@@ -27,11 +27,11 @@ function handleRadioChange(event) {
     var textFieldsContainer = document.getElementById('textFields');
     textFieldsContainer.innerHTML = ''; // Clear existing fields
 
+    // In your JavaScript file, modify the loop that creates text fields
     for (var i = 0; i < count; i++) {
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Title for set ${i + 1}`;
-        input.className = 'form-control my-2'; // Bootstrap class for styling
-        textFieldsContainer.appendChild(input);
+        var textarea = document.createElement('textarea');
+        textarea.placeholder = `Title for set ${i + 1}`;
+        textarea.className = 'form-control my-2'; // Bootstrap class for styling
+        textFieldsContainer.appendChild(textarea);
     }
 }
