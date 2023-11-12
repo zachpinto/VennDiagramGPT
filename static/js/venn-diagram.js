@@ -69,7 +69,7 @@ function createSets(numberOfSets) {
         return [
             {sets: ['A'], size: 12},
             {sets: ['B'], size: 12},
-            {sets: ['A','B'], size: 2}
+            {sets: ['A','B'], size: 4}
         ];
     }
 
@@ -78,9 +78,9 @@ function createSets(numberOfSets) {
             {sets: ['A'], size: 12},
             {sets: ['B'], size: 12},
             {sets: ['C'], size: 12},
-            {sets: ['A','B'], size: 2},
-            {sets: ['A','C'], size: 2},
-            {sets: ['B','C'], size: 2},
+            {sets: ['A','B'], size: 4},
+            {sets: ['A','C'], size: 4},
+            {sets: ['B','C'], size: 4},
             {sets: ['A','B','C'], size: 2}
         ];
     }
@@ -91,17 +91,17 @@ function createSets(numberOfSets) {
             {sets: ['B'], size: 12},
             {sets: ['C'], size: 12},
             {sets: ['D'], size: 12},
-            {sets: ['A','B'], size: 2},
-            {sets: ['A','C'], size: 2},
-            {sets: ['A','D'], size: 2},
-            {sets: ['B','C'], size: 2},
-            {sets: ['B','D'], size: 2},
-            {sets: ['C','D'], size: 2},
-            {sets: ['A','B','C'], size: 2},
-            {sets: ['A','B','D'], size: 2},
-            {sets: ['A','C','D'], size: 2},
-            {sets: ['B','C','D'], size: 2},
-            {sets: ['A','B','C','D'], size: 2}
+            {sets: ['A','B'], size: 4},
+            {sets: ['A','C'], size: 4},
+            {sets: ['A','D'], size: 4},
+            {sets: ['B','C'], size: 4},
+            {sets: ['B','D'], size: 4},
+            {sets: ['C','D'], size: 4},
+            {sets: ['A','B','C'], size: 1},
+            {sets: ['A','B','D'], size: 1},
+            {sets: ['A','C','D'], size: 1},
+            {sets: ['B','C','D'], size: 1},
+            {sets: ['A','B','C','D'], size: 1}
         ];
     }
     // Extend the logic for 3 and 4 sets as needed
