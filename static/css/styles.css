@@ -1,10 +1,21 @@
 .input-box {
     position: fixed;
     left: 10px;
-    top: 10px;
+    top: 50%; /* Adjust to position lower on the screen */
+    transform: translateY(-50%);
     border: 1px solid #ddd;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.radio-button {
+    margin-bottom: 20px; /* Space between radio buttons */
+}
+
+.radio-number {
+    display: block;
+    text-align: center;
+    margin-bottom: 5px;
 }
 
 .input-box label {
@@ -22,9 +33,7 @@
   display: none;
 }
 
-.tgl, .tgl:after, .tgl-btn, .tgl-btn:after {
-  box-sizing: border-box;
-}
+
 
 .tgl-light + .tgl-btn {
   background: #f0f0f0;
