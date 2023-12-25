@@ -3,11 +3,11 @@ const svgNS = "http://www.w3.org/2000/svg";
 
 // Handles changes to the radio buttons
 function handleRadioChange(event, textFieldsContainer) {
-    var count = parseInt(event.target.value, 10);
+    const count = parseInt(event.target.value, 10);
     textFieldsContainer.innerHTML = ''; // Clear existing fields
 
-    for (var i = 0; i < count; i++) {
-        var input = document.createElement('input');
+    for (let i = 0; i < count; i++) {
+        const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `Title for set ${i + 1}`;
         input.className = 'form-control my-2'; // Bootstrap class for styling
@@ -16,26 +16,33 @@ function handleRadioChange(event, textFieldsContainer) {
     }
 }
 
-// Event listeners for the input fields
-function setupInputListeners(vennDiagramContainer) {
-    // Get all input elements
+// Modify the setupInputListeners function
+function setupInputListeners(vennDiagramContainer, setCount) {
     let inputs = document.querySelectorAll('#textFields input');
     inputs.forEach((input, index) => {
         input.addEventListener('input', function() {
-            // Update the text in the Venn diagram
-            let textElement = vennDiagramContainer.querySelector(`text:nth-child(${index + 1})`);
-            if (textElement) {
-                textElement.textContent = input.value;
+            let textElement = vennDiagramContainer.querySelector(`text[data-set-index="${index}"]`);
+            if (!textElement) {
+                textElement = document.createElementNS(svgNS, "text");
+                textElement.setAttribute('data-set-index', index);
+                textElement.setAttribute('font-size', '10');
+                textElement.setAttribute('text-anchor', 'middle');
+                textElement.setAttribute('dominant-baseline', 'middle');
+                textElement.setAttribute('fill', '#333');
+                vennDiagramContainer.querySelector('svg').appendChild(textElement);
             }
+            textElement.textContent = input.value;
+            textElement.setAttribute('x', calculateXPosition(index, setCount));
+            textElement.setAttribute('y', calculateYPosition(index, setCount));
         });
     });
 }
 
 // DOMContentLoaded event to set up initial event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    var radios = document.querySelectorAll('input[name="setCount"]');
-    var textFieldsContainer = document.getElementById('textFields');
-    var vennDiagramContainer = document.getElementById('vennDiagramContainer');
+    const radios = document.querySelectorAll('input[name="setCount"]');
+    const textFieldsContainer = document.getElementById('textFields');
+    const vennDiagramContainer = document.getElementById('vennDiagramContainer');
 
     radios.forEach(function(radio) {
         radio.addEventListener('change', function(event) {
@@ -49,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Generates the Venn diagram based on the selected number of sets
+// Generates the Venn diagram based on the selected number of sets
 function generateVennDiagram(setCount, vennDiagramContainer, textFieldsContainer) {
-    // Define the colors for the circles
     const colors = [
         "rgba(255, 192, 203, 0.5)", // Light Pink
         "rgba(173, 216, 230, 0.5)", // Light Blue
@@ -58,44 +65,43 @@ function generateVennDiagram(setCount, vennDiagramContainer, textFieldsContainer
         "rgba(255,242,146,0.5)"     // Light Yellow
     ];
 
-    // Clear the container
-    vennDiagramContainer.innerHTML = '';
+    // Check if the SVG element already exists
+    let svg = vennDiagramContainer.querySelector('svg');
+    if (!svg) {
+        // Create the SVG element if it doesn't exist
+        svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.setAttribute('viewBox', '0 0 300 300');
 
-    // Create the SVG element
-    let svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute('width', '100%'); // Set width to 100% to fill the container
-    svg.setAttribute('height', '100%'); // Set height to 100% to fill the container
-    svg.setAttribute('viewBox', '0 0 300 300'); // Set viewBox to match the design
+        const circleConfigs = {
+            2: [{ cx: 110, cy: 150, r: 80 },
+                { cx: 190, cy: 150, r: 80 }],
+            3: [{ cx: 110, cy: 120, r: 80 },
+                { cx: 190, cy: 120, r: 80 },
+                { cx: 150, cy: 190, r: 80 }],
+            4: [{ cx: 150, cy: 110, r: 60 },
+                { cx: 110, cy: 150, r: 60 },
+                { cx: 150, cy: 190, r: 60 },
+                { cx: 190, cy: 150, r: 60 }]
+        };
 
-    // Define the positions and radii for the circles
-    const circleConfigs = {
-        2: [{ cx: 110, cy: 150, r: 80 },
-            { cx: 190, cy: 150, r: 80 }],
+        // Add circles to the SVG element
+        circleConfigs[setCount].forEach((circle, index) => {
+            let circleEl = document.createElementNS(svgNS, "circle");
+            circleEl.setAttribute('cx', circle.cx);
+            circleEl.setAttribute('cy', circle.cy);
+            circleEl.setAttribute('r', circle.r);
+            circleEl.setAttribute('fill', colors[index % colors.length]);
+            svg.appendChild(circleEl);
+        });
 
-        3: [{ cx: 110, cy: 120, r: 80 },
-            { cx: 190, cy: 120, r: 80 },
-            { cx: 150, cy: 190, r: 80 }],
-
-        4: [{ cx: 150, cy: 110, r: 60 },
-            { cx: 110, cy: 150, r: 60 },
-            { cx: 150, cy: 190, r: 60 },
-            { cx: 190, cy: 150, r: 60 }]
-    };
-
-    // Add circles to the SVG element
-    circleConfigs[setCount].forEach((circle, index) => {
-        let circleEl = document.createElementNS(svgNS, "circle");
-        circleEl.setAttribute('cx', circle.cx);
-        circleEl.setAttribute('cy', circle.cy);
-        circleEl.setAttribute('r', circle.r);
-        circleEl.setAttribute('fill', colors[index % colors.length]);
-        svg.appendChild(circleEl);
-    });
-
-    // Append the SVG to the container
-    vennDiagramContainer.appendChild(svg);
+        // Append the SVG to the container
+        vennDiagramContainer.appendChild(svg);
+    }
 
     // Call updateVennDiagram to place text elements
+    setupInputListeners(vennDiagramContainer, setCount);
     updateVennDiagram(setCount, textFieldsContainer, vennDiagramContainer, svg);
 }
 
@@ -127,13 +133,34 @@ function updateVennDiagram(setCount, textFieldsContainer, vennDiagramContainer, 
 
 // Calculates the X position of the text based on the index and setCount
 function calculateXPosition(index, setCount) {
-    // Placeholder function, implement logic based on Venn diagram layout
-    return 150; // Example position
+    // Simple example logic, needs refinement based on actual Venn diagram layout
+    if (setCount === 2) {
+        return index === 0 ? 80 : 220;
+    } else if (setCount === 3) {
+        if (index === 0) return 80;
+        if (index === 1) return 220;
+        return 150;
+    } else { // setCount === 4
+        if (index === 0) return 150;
+        if (index === 1) return 80;
+        if (index === 2) return 150;
+        return 220;
+    }
 }
 
 // Calculates the Y position of the text based on the index and setCount
 function calculateYPosition(index, setCount) {
-    // Placeholder function, implement logic based on Venn diagram layout
-    return 150; // Example position
+    // Simple example logic, needs refinement based on actual Venn diagram layout
+    if (setCount === 2) {
+        return 150; // Middle for both
+    } else if (setCount === 3) {
+        if (index === 0 || index === 1) return 110;
+        return 190;
+    } else { // setCount === 4
+        if (index === 0) return 80;
+        if (index === 1) return 150;
+        if (index === 2) return 220;
+        return 150;
+    }
 }
 
