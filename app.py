@@ -22,22 +22,22 @@ def generate_text():
     set_titles = data['setTitles']
     print("Received request:", set_titles)
 
-    try:
-        # Construct the message array for the API call
-        messages = [{"role": "system", "content": "You are a helpful assistant."}]
-        for title in set_titles:
-            messages.append({"role": "user", "content": title})
+    # Combine the titles into a single query
+    combined_query = " and ".join(set_titles)
 
-        # Make the API call
-        chat_completion = client.chat.completions.create(
+    # Formulate the prompt
+    prompt = f"Explain the relationship or intersection between: {combined_query}."
+
+    try:
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=messages
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ]
         )
-        print("API Response:", chat_completion)
-        return jsonify({"text": chat_completion.choices[0].message['content']})
+        print("API Response:", response)
+        return jsonify({"text": response.choices[0].message.content})
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
