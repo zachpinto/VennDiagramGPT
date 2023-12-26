@@ -42,10 +42,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setupInputListeners(vennDiagramContainer);
     document.getElementById('generateButton').addEventListener('click', onGenerateClicked);
+
+    const generateButton = document.getElementById('generateButton');
+    if (generateButton) {
+        generateButton.addEventListener('click', handleGenerateButtonClick);
+    } else {
+        console.error("Generate button not found");
+    }
 });
 
 
-// Generates the Venn diagram based on the selected number of sets
 // Generates the Venn diagram based on the selected number of sets
 function generateVennDiagram(setCount, vennDiagramContainer) {
     const colors = [
@@ -152,7 +158,7 @@ function calculateYPosition(index, setCount) {
         return 150; // Middle for both
     } else if (setCount === 3) {
         if (index === 0 || index === 1) return 110;
-        return 190;
+        return 220;
     } else { // setCount === 4
         if (index === 0) return 80;
         if (index === 1) return 150;
@@ -181,7 +187,7 @@ function onGenerateClicked() {
 
     if (setTitles.length >= 2) {
         const intersections = calculateIntersections(setTitles);
-        generateAndDisplayText(intersections);
+        generateAndDisplayText(intersections, setTitles); // Pass setTitles here
     } else {
         alert('Please enter titles for at least two sets.');
     }
@@ -189,11 +195,8 @@ function onGenerateClicked() {
 
 
 
-
-
-
 // Assuming you have a function to make the POST request and fetch the responses
-function generateAndDisplayText(intersections) {
+function generateAndDisplayText(intersections, setTitles) {
     intersections.forEach(intersection => {
         fetch('/generate-text', {
             method: 'POST',
@@ -202,7 +205,10 @@ function generateAndDisplayText(intersections) {
         })
         .then(response => response.json())
         .then(data => {
-            displayTextAtIntersection(intersection, data.text);
+            for (let key in data) {
+                let intersectionKey = key.split(", ");
+                displayTextAtIntersection(intersectionKey, data[key], setTitles.length, setTitles);
+            }
         })
         .catch(error => console.error('Error:', error));
     });
@@ -210,20 +216,15 @@ function generateAndDisplayText(intersections) {
 
 
 
-function displayTextAtIntersection(intersection, text) {
+function displayTextAtIntersection(intersection, text, setCount, setTitles) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
 
-    // Define positions for each intersection (adjust these based on your diagram layout)
-    const positions = {
-        'cat, dog': { x: 150, y: 100 }, // Adjust as needed
-        // ... other positions
-    };
-
     const key = intersection.join(', ');
-    const position = positions[key];
+    const positions = getPositionsForSetCount(setCount, setTitles);
 
-    if (position) {
+    if (positions && positions[key]) {
+        const position = positions[key];
         const textElement = document.createElementNS(svgNS, "text");
         textElement.setAttribute('x', position.x);
         textElement.setAttribute('y', position.y);
@@ -231,7 +232,28 @@ function displayTextAtIntersection(intersection, text) {
         textElement.setAttribute('dominant-baseline', 'middle');
         textElement.textContent = text;
         svg.appendChild(textElement);
+    } else {
+        console.log("Position not found for intersection: ", key);
     }
+}
+
+
+function getPositionsForSetCount(setCount, setTitles) {
+    let positions = {};
+
+    if (setCount === 2) {
+        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 150, y: 150 };
+    } else if (setCount === 3) {
+        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 100, y: 100 };
+        positions[`${setTitles[0]}, ${setTitles[2]}`] = { x: 200, y: 100 };
+        positions[`${setTitles[1]}, ${setTitles[2]}`] = { x: 150, y: 200 };
+        positions[`${setTitles[0]}, ${setTitles[1]}, ${setTitles[2]}`] = { x: 150, y: 150 };
+    } else if (setCount === 4) {
+        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 100, y: 75 };
+        // ... and so on for other combinations
+        // Add more positions as needed
+    }
+    return positions;
 }
 
 
@@ -246,6 +268,3 @@ function handleGenerateButtonClick() {
     alert('Please enter titles for the sets.');
   }
 }
-
-// Attach this function to the "Generate" button click event
-document.getElementById('generateButton').addEventListener('click', handleGenerateButtonClick);
