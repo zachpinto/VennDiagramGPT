@@ -115,6 +115,19 @@ function updateVennDiagram(setCount, vennDiagramContainer) {
 }
 
 
+function calculateIntersections(setTitles) {
+    let intersections = [];
+    for (let size = 2; size <= setTitles.length; size++) {
+        const combinations = getCombinations(setTitles, size);
+        intersections = intersections.concat(combinations);
+    }
+    if (setTitles.length > 2) {
+        intersections.push(setTitles); // Include the full set for three or more titles
+    }
+    return intersections;
+}
+
+
 // Calculates the X position of the text based on the index and setCount
 function calculateXPosition(index, setCount) {
     // Simple example logic, needs refinement based on actual Venn diagram layout
@@ -161,114 +174,64 @@ function getCombinations(array, size) {
     }, []);
 }
 
-function calculateIntersections(setTitles) {
-    let intersections = [];
-    // Generate pairs (2-combinations) only once
-    for (let i = 0; i < setTitles.length - 1; i++) {
-        for (let j = i + 1; j < setTitles.length; j++) {
-            intersections.push([setTitles[i], setTitles[j]]);
-        }
-    }
-    // Add combination of all elements if more than 2 sets
-    if (setTitles.length > 2) {
-        intersections.push([...setTitles]); // Add all elements as a single group
-    }
-    return intersections;
-}
-
 
 function onGenerateClicked() {
     const inputs = document.querySelectorAll('#textFields input');
     const setTitles = Array.from(inputs).map(input => input.value.trim()).filter(value => value);
 
-    if (setTitles.length > 1) {
+    if (setTitles.length >= 2) {
         const intersections = calculateIntersections(setTitles);
-
-        intersections.forEach(intersection => {
-            const prompt = intersection.join(' and ');
-            generateAndDisplayText(prompt, intersection);
-        });
+        generateAndDisplayText(intersections);
     } else {
         alert('Please enter titles for at least two sets.');
     }
 }
 
 
+
+
+
+
 // Assuming you have a function to make the POST request and fetch the responses
-function generateAndDisplayText(prompt, intersection) {
-    const requestData = { setTitles: intersection };
-
-    fetch('/generate-text', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        const text = data.text; // The generated text
-        displayTextAtIntersection(intersection, text, index); // Pass index for positioning
-    })
-    .catch(error => console.error('Error:', error));
+function generateAndDisplayText(intersections) {
+    intersections.forEach(intersection => {
+        fetch('/generate-text', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ setTitles: intersection })
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayTextAtIntersection(intersection, data.text);
+        })
+        .catch(error => console.error('Error:', error));
+    });
 }
 
-
-function calculateXForIntersection(index, intersection) {
-    const setCount = intersection.length;
-    switch (setCount) {
-        case 2: return 150; // Middle for two sets
-        case 3:
-            // Three different positions for three intersections
-            if (index === 0) return 100;
-            if (index === 1) return 200;
-            return 150; // Middle for the third intersection
-        case 4:
-            // Implement logic for four sets
-            // This is an example and needs refinement
-            if (index === 0) return 120;
-            if (index === 1) return 180;
-            if (index === 2) return 120;
-            return 180;
-        default: return 150; // Default position, adjust as needed
-    }
-}
-
-function calculateYForIntersection(index, intersection) {
-    const setCount = intersection.length;
-    switch (setCount) {
-        case 2: return 150; // Middle for two sets
-        case 3:
-            // Three different positions for three intersections
-            if (index === 0 || index === 1) return 130;
-            return 170; // Lower for the third intersection
-        case 4:
-            // Implement logic for four sets
-            // This is an example and needs refinement
-            if (index === 0) return 140;
-            if (index === 1) return 140;
-            if (index === 2) return 160;
-            return 160;
-        default: return 150; // Default position, adjust as needed
-    }
-}
 
 
 function displayTextAtIntersection(intersection, text) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
 
-    // Calculate the position for the text based on the intersection
-    const x = calculateXForIntersection(intersection);
-    const y = calculateYForIntersection(intersection);
+    // Define positions for each intersection (adjust these based on your diagram layout)
+    const positions = {
+        'cat, dog': { x: 150, y: 100 }, // Adjust as needed
+        // ... other positions
+    };
 
-    // Create SVG text element
-    const textElement = document.createElementNS(svgNS, "text");
-    textElement.setAttribute('x', x);
-    textElement.setAttribute('y', y);
-    textElement.setAttribute('text-anchor', 'middle');
-    textElement.setAttribute('dominant-baseline', 'middle');
-    textElement.textContent = text;
+    const key = intersection.join(', ');
+    const position = positions[key];
 
-    svg.appendChild(textElement);
+    if (position) {
+        const textElement = document.createElementNS(svgNS, "text");
+        textElement.setAttribute('x', position.x);
+        textElement.setAttribute('y', position.y);
+        textElement.setAttribute('text-anchor', 'middle');
+        textElement.setAttribute('dominant-baseline', 'middle');
+        textElement.textContent = text;
+        svg.appendChild(textElement);
+    }
 }
 
 
