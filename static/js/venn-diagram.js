@@ -148,15 +148,48 @@ function calculateYPosition(index, setCount) {
     }
 }
 
-function onGenerateClicked() {
-    // Collecting set titles from input fields
-    let setTitles = [];
-    const inputs = document.querySelectorAll('#textFields input');
-    inputs.forEach(input => {
-        setTitles.push(input.value);
-    });
 
-    let requestData = { setTitles: setTitles };
+function getCombinations(array, size) {
+    if (size > array.length) return [];
+    if (size === 1) return array.map(element => [element]);
+    return array.reduce((acc, value, index) => {
+        const smallerCombinations = getCombinations(array.slice(index + 1), size - 1);
+        smallerCombinations.forEach(combination => {
+            acc.push([value].concat(combination));
+        });
+        return acc;
+    }, []);
+}
+
+function calculateIntersections(setTitles) {
+    let intersections = [];
+    for (let size = 1; size <= setTitles.length; size++) {
+        const combinations = getCombinations(setTitles, size);
+        intersections = intersections.concat(combinations);
+    }
+    return intersections;
+}
+
+
+function onGenerateClicked() {
+    const inputs = document.querySelectorAll('#textFields input');
+    const setTitles = Array.from(inputs).map(input => input.value.trim()).filter(value => value);
+
+    if (setTitles.length > 0) {
+        const intersections = calculateIntersections(setTitles);
+
+        intersections.forEach(intersection => {
+            const prompt = intersection.join(' and ');
+            generateAndDisplayText(prompt, intersection);
+        });
+    } else {
+        alert('Please enter titles for the sets.');
+    }
+}
+
+// Assuming you have a function to make the POST request and fetch the responses
+function generateAndDisplayText(prompt, intersection) {
+    const requestData = { setTitles: intersection };
 
     fetch('/generate-text', {
         method: 'POST',
@@ -165,12 +198,30 @@ function onGenerateClicked() {
     })
     .then(response => response.json())
     .then(data => {
-        // Assuming data.text contains the response for intersections
-        // Update your SVG elements here based on this data
-        let intersectionTextElement = document.getElementById('vennDiagramContainer').querySelector(`text[data-set-index="0"]`);
-        if (intersectionTextElement) {
-            intersectionTextElement.textContent = data.text; // or however the text is structured
-        }
+        displayResponses(data, intersection);
     })
     .catch(error => console.error('Error:', error));
 }
+
+function displayResponses(data, intersection) {
+    const responsesDiv = document.getElementById('responses');
+    const p = document.createElement('p');
+    p.textContent = `${intersection.join(', ')}: ${data.text}`;
+    responsesDiv.appendChild(p);
+}
+
+// Function to get titles from input fields and generate text
+function handleGenerateButtonClick() {
+  const inputs = document.querySelectorAll('#textFields input');
+  const setTitles = Array.from(inputs).map(input => input.value.trim()).filter(value => value);
+
+  if (setTitles.length > 0) {
+    generateAndDisplayText(setTitles);
+  } else {
+    alert('Please enter titles for the sets.');
+  }
+}
+
+// Attach this function to the "Generate" button click event
+document.getElementById('generateButton').addEventListener('click', handleGenerateButtonClick);
+
