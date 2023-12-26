@@ -28,11 +28,15 @@ def generate_text():
         for i in range(len(set_titles)):
             for j in range(i+1, len(set_titles)):
                 combined_query = f"{set_titles[i]} and {set_titles[j]}"
-                prompt = (f"I am creating a venn diagram and I need your help filling in the intersections of the sets."
+                prompt = ("I am creating a venn diagram and I need your help filling in the intersections of the sets."
                           f"Come up with a creative relationship between the two following sets: {combined_query}."
                           "Since this is a venn diagram, it is important that the intersections are relatively brief,"
                           "they should either be a single word or a very short phrase. But they should be creative,"
-                          "so try to avoid the obvious answers.")
+                          "so try to avoid the obvious answers."
+                          "It is very very important that you only give one relationship at a time, and don't "
+                          "say anything else other than the relationship itself. Don't give any context, don't, "
+                          "precede the output with a description, don't even say the name of the set, "
+                          "and don't even precede the output with label. Literally just give the output.")
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
