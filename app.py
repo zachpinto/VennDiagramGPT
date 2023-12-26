@@ -1,12 +1,16 @@
 from flask import Flask, request, jsonify, render_template
-import openai
-from dotenv import load_dotenv
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
 
-load_dotenv()
-openai.api_key = os.getenv('API_KEY')
+# Fetch the API Key from the environment variable
+openai_api_key = os.getenv('OPENAI_API_KEY')
+if not openai_api_key:
+    raise ValueError("No OPENAI_API_KEY found in environment variables")
+
+# Initialize the OpenAI client with the API Key
+client = OpenAI(api_key=openai_api_key)
 
 @app.route('/')
 def index():
@@ -16,19 +20,23 @@ def index():
 def generate_text():
     data = request.json
     set_titles = data['setTitles']
+    print("Received request:", set_titles)
 
     try:
-        # Use the Chat Completions API
-        response = openai.ChatCompletion.create(
-            model=os.getenv('OPENAI_MODEL', 'gpt-4'),
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": " ".join(set_titles)}
-            ]
+        # Construct the message array for the API call
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        for title in set_titles:
+            messages.append({"role": "user", "content": title})
+
+        # Make the API call
+        chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages
         )
-        return jsonify({"text": response.choices[0].message['content']})
+        print("API Response:", chat_completion)
+        return jsonify({"text": chat_completion.choices[0].message['content']})
     except Exception as e:
-        app.logger.error(f'Error generating text: {e}')
+        print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
