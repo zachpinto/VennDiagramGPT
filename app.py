@@ -55,10 +55,10 @@ def generate_text():
     data = request.json
     set_titles = data.get('setTitles')
 
-    if not set_titles or not isinstance(set_titles, list) or len(set_titles) < 2 or len(set_titles) > 4:
+    # Check for None or empty values in set_titles
+    if not set_titles or not all(set_titles) or not isinstance(set_titles, list) or len(set_titles) < 2 or len(set_titles) > 4:
         print("Invalid input:", set_titles)
-        return jsonify({"error": "Invalid input. Set titles must be a list with 2 to 4 elements."}), 400
-
+        return jsonify({"error": "Invalid input. Set titles must be a list with 2 to 4 non-empty elements."}), 400
     try:
         # Acquire lock to handle concurrent requests
         with request_lock:

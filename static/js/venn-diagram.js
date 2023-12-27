@@ -1,8 +1,10 @@
 // Global SVG namespace
 const svgNS = "http://www.w3.org/2000/svg";
 
+
 // Handles changes to the radio buttons
 function handleRadioChange(event, textFieldsContainer) {
+
     const count = parseInt(event.target.value, 10);
     textFieldsContainer.innerHTML = ''; // Clear existing fields
 
@@ -10,11 +12,14 @@ function handleRadioChange(event, textFieldsContainer) {
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `Title for set ${i + 1}`;
-        input.className = 'form-control my-2'; // Bootstrap class for styling
-        input.setAttribute('name', `setTitle${i}`);
+        input.className = 'form-control my-2 set-title-input'; // Add a class for easy selection
         textFieldsContainer.appendChild(input);
+
+    console.log("New input fields added:", textFieldsContainer.innerHTML);
+
     }
 }
+
 
 // Modify the setupInputListeners function
 function setupInputListeners(vennDiagramContainer, setCount) {
@@ -100,6 +105,8 @@ function generateVennDiagram(setCount, vennDiagramContainer) {
     });
 }
 
+
+// Updates the Venn diagram based on the set titles
 function updateVennDiagram(setCount, vennDiagramContainer) {
     let textElements = vennDiagramContainer.querySelectorAll('text');
     textElements.forEach(text => text.remove());
@@ -121,15 +128,15 @@ function updateVennDiagram(setCount, vennDiagramContainer) {
 }
 
 
+// Calculates the intersections based on the set titles
 function calculateIntersections(setTitles) {
     let intersections = [];
-    for (let size = 2; size <= setTitles.length; size++) {
-        const combinations = getCombinations(setTitles, size);
-        intersections = intersections.concat(combinations);
+    for (let i = 0; i < setTitles.length; i++) {
+        for (let j = i + 1; j < setTitles.length; j++) {
+            intersections.push([i, j]);
+        }
     }
-    if (setTitles.length > 2) {
-        intersections.push(setTitles); // Include the full set for three or more titles
-    }
+    console.log("Calculated intersections in calculateIntersections:", intersections);
     return intersections;
 }
 
@@ -151,6 +158,7 @@ function calculateXPosition(index, setCount) {
     }
 }
 
+
 // Calculates the Y position of the text based on the index and setCount
 function calculateYPosition(index, setCount) {
     // Simple example logic, needs refinement based on actual Venn diagram layout
@@ -168,6 +176,7 @@ function calculateYPosition(index, setCount) {
 }
 
 
+// Get combinations
 function getCombinations(array, size) {
     if (size > array.length) return [];
     if (size === 1) return array.map(element => [element]);
@@ -181,33 +190,59 @@ function getCombinations(array, size) {
 }
 
 
+// Assuming onGenerateClicked function looks something like this
 function onGenerateClicked() {
-    const inputs = document.querySelectorAll('#textFields input');
-    const setTitles = Array.from(inputs).map(input => input.value.trim()).filter(value => value);
+    const inputs = document.querySelectorAll('.set-title-input');
+    let setTitles = [];
+
+    for (let input of inputs) {
+        if (input.value.trim() === "") {
+            alert('Please enter titles for all sets.');
+            return;
+        }
+        setTitles.push(input.value.trim());
+    }
+
+    console.log("Collected setTitles in onGenerateClicked:", setTitles); // Debugging line
 
     if (setTitles.length >= 2) {
         const intersections = calculateIntersections(setTitles);
-        generateAndDisplayText(intersections, setTitles); // Pass setTitles here
+        generateAndDisplayText(intersections, setTitles);
     } else {
         alert('Please enter titles for at least two sets.');
     }
 }
 
 
-
 // Assuming you have a function to make the POST request and fetch the responses
 function generateAndDisplayText(intersections, setTitles) {
-    intersections.forEach(intersection => {
+    console.log("Received setTitles:", setTitles);
+    console.log("Intersections:", intersections);
+
+    intersections.forEach(intersectionIndices => {
+        let intersectionTitles = intersectionIndices.map(index => setTitles[index]);
+        console.log("Processing intersection:", intersectionTitles);
+        // Check for null or empty titles
+        if (intersectionTitles.some(title => !title)) {
+            console.error("Invalid intersection format: One or more titles are empty", intersectionTitles);
+            return;
+        }
+
+        // Proceed with valid intersections
         fetch('/generate-text', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ setTitles: intersection })
+            body: JSON.stringify({ setTitles: intersectionTitles })
         })
         .then(response => response.json())
         .then(data => {
-            for (let key in data) {
-                let intersectionKey = key.split(", ");
-                displayTextAtIntersection(intersectionKey, data[key], setTitles.length, setTitles);
+            if (data && !data.error) {
+                for (let key in data) {
+                    let intersectionKey = key.split(", ");
+                    displayTextAtIntersection(intersectionKey, data[key], intersectionTitles.length, setTitles);
+                }
+            } else {
+                console.error("Error received from API:", data.error);
             }
         })
         .catch(error => console.error('Error:', error));
@@ -215,13 +250,16 @@ function generateAndDisplayText(intersections, setTitles) {
 }
 
 
-
+// Displays the text at the intersection
 function displayTextAtIntersection(intersection, text, setCount, setTitles) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
 
     const key = intersection.join(', ');
     const positions = getPositionsForSetCount(setCount, setTitles);
+
+    console.log("Displaying text at position:", positions[key]);
+
 
     if (positions && positions[key]) {
         const position = positions[key];
@@ -234,12 +272,19 @@ function displayTextAtIntersection(intersection, text, setCount, setTitles) {
         svg.appendChild(textElement);
     } else {
         console.log("Position not found for intersection: ", key);
+
     }
 }
 
 
+// Get positions for set count
 function getPositionsForSetCount(setCount, setTitles) {
     let positions = {};
+
+    if (!setTitles || setTitles.length === 0) {
+    console.error("No set titles provided for position calculation");
+    return positions;
+    }
 
     if (setCount === 2) {
         positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 150, y: 150 };
@@ -253,18 +298,31 @@ function getPositionsForSetCount(setCount, setTitles) {
         // ... and so on for other combinations
         // Add more positions as needed
     }
+    console.log("Positions:", positions);
     return positions;
 }
 
 
-// Function to get titles from input fields and generate text
+// Handles the Generate button click
 function handleGenerateButtonClick() {
-  const inputs = document.querySelectorAll('#textFields input');
-  const setTitles = Array.from(inputs).map(input => input.value.trim()).filter(value => value);
+    const inputs = document.querySelectorAll('.set-title-input');
+    let setTitles = [];
 
-  if (setTitles.length > 0) {
-    generateAndDisplayText(setTitles);
-  } else {
-    alert('Please enter titles for the sets.');
-  }
+    for (let input of inputs) {
+        console.log("Input value:", input.value); // Add this line for debugging
+        if (input.value.trim() === "") {
+            alert('Please enter titles for all sets.');
+            return;
+        }
+        setTitles.push(input.value.trim());
+    }
+
+    console.log("Collected setTitles:", setTitles); // Debugging line
+
+    if (setTitles.length >= 2) {
+        const intersections = calculateIntersections(setTitles);
+        generateAndDisplayText(intersections, setTitles);
+    } else {
+        alert('Please enter titles for at least two sets.');
+    }
 }
