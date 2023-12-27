@@ -13,6 +13,7 @@ function handleRadioChange(event, textFieldsContainer) {
         input.type = 'text';
         input.placeholder = `Title for set ${i + 1}`;
         input.className = 'form-control my-2 set-title-input'; // Add a class for easy selection
+        input.name = `setTitle${i}`; // Assign name attribute
         textFieldsContainer.appendChild(input);
 
     console.log("New input fields added:", textFieldsContainer.innerHTML);
@@ -250,18 +251,19 @@ function generateAndDisplayText(intersections, setTitles) {
 }
 
 
-// Displays the text at the intersection
-function displayTextAtIntersection(intersection, text, setCount, setTitles) {
+// Global variable for positions (if needed)
+let positions = {};
+
+// Function to display text at the intersection
+function displayTextAtIntersection(intersection, text) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
 
+    // Format the key to match the format used in 'positions'
     const key = intersection.join(', ');
-    const positions = getPositionsForSetCount(setCount, setTitles);
 
-    console.log("Displaying text at position:", positions[key]);
-
-
-    if (positions && positions[key]) {
+    // Check if the position for this intersection is defined
+    if (positions[key]) {
         const position = positions[key];
         const textElement = document.createElementNS(svgNS, "text");
         textElement.setAttribute('x', position.x);
@@ -271,35 +273,8 @@ function displayTextAtIntersection(intersection, text, setCount, setTitles) {
         textElement.textContent = text;
         svg.appendChild(textElement);
     } else {
-        console.log("Position not found for intersection: ", key);
-
+        console.log("Position not found for intersection:", key);
     }
-}
-
-
-// Get positions for set count
-function getPositionsForSetCount(setCount, setTitles) {
-    let positions = {};
-
-    if (!setTitles || setTitles.length === 0) {
-    console.error("No set titles provided for position calculation");
-    return positions;
-    }
-
-    if (setCount === 2) {
-        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 150, y: 150 };
-    } else if (setCount === 3) {
-        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 100, y: 100 };
-        positions[`${setTitles[0]}, ${setTitles[2]}`] = { x: 200, y: 100 };
-        positions[`${setTitles[1]}, ${setTitles[2]}`] = { x: 150, y: 200 };
-        positions[`${setTitles[0]}, ${setTitles[1]}, ${setTitles[2]}`] = { x: 150, y: 150 };
-    } else if (setCount === 4) {
-        positions[`${setTitles[0]}, ${setTitles[1]}`] = { x: 100, y: 75 };
-        // ... and so on for other combinations
-        // Add more positions as needed
-    }
-    console.log("Positions:", positions);
-    return positions;
 }
 
 
