@@ -4,7 +4,6 @@ const svgNS = "http://www.w3.org/2000/svg";
 
 // Handles changes to the radio buttons
 function handleRadioChange(event, textFieldsContainer) {
-
     const count = parseInt(event.target.value, 10);
     textFieldsContainer.innerHTML = ''; // Clear existing fields
 
@@ -15,10 +14,9 @@ function handleRadioChange(event, textFieldsContainer) {
         input.className = 'form-control my-2 set-title-input'; // Add a class for easy selection
         input.name = `setTitle${i}`; // Assign name attribute
         textFieldsContainer.appendChild(input);
+    }
 
     console.log("New input fields added:", textFieldsContainer.innerHTML);
-
-    }
 }
 
 
@@ -43,19 +41,30 @@ document.addEventListener('DOMContentLoaded', function() {
         radio.addEventListener('change', function(event) {
             handleRadioChange(event, textFieldsContainer);
             generateVennDiagram(parseInt(event.target.value), vennDiagramContainer);
+            setupInputListeners(vennDiagramContainer, parseInt(event.target.value)); // Corrected
         });
     });
 
-    setupInputListeners(vennDiagramContainer);
-    document.getElementById('generateButton').addEventListener('click', onGenerateClicked);
-
-    const generateButton = document.getElementById('generateButton');
-    if (generateButton) {
-        generateButton.addEventListener('click', handleGenerateButtonClick);
-    } else {
-        console.error("Generate button not found");
-    }
+    document.getElementById('generateButton').addEventListener('click', handleGenerateButtonClick);
 });
+
+
+// Populates the positions object based on the number of sets and their titles
+function populatePositions(setCount, setTitles) {
+    positions = {};
+    if (setCount === 2) {
+        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 150, y: 150 }; // Central intersection point for 2 sets
+    } else if (setCount === 3) {
+        // Example positions for 3-set intersections
+        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 100, y: 150 }; // Changed format to 'and'
+        positions[`${setTitles[0]} and ${setTitles[2]}`] = { x: 200, y: 150 }; // Changed format to 'and'
+        positions[`${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 200 }; // Changed format to 'and'
+        // Position for all three
+        positions[`${setTitles[0]} and ${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 150 }; // Changed format to 'and'
+    }
+    // Add more logic for 4 sets...
+    console.log('Populated positions:', positions);
+}
 
 
 // Generates the Venn diagram based on the selected number of sets
@@ -104,6 +113,16 @@ function generateVennDiagram(setCount, vennDiagramContainer) {
     setupInputListeners(vennDiagramContainer, setCount)
     updateVennDiagram(setCount, vennDiagramContainer);
     });
+
+    let setTitles = [];
+    for (let i = 0; i < setCount; i++) {
+        let input = document.querySelector(`input[name="setTitle${i}"]`);
+        if (input) {
+            setTitles.push(input.value.trim());
+        }
+    }
+
+    populatePositions(setCount, setTitles);
 }
 
 
@@ -191,30 +210,6 @@ function getCombinations(array, size) {
 }
 
 
-// Assuming onGenerateClicked function looks something like this
-function onGenerateClicked() {
-    const inputs = document.querySelectorAll('.set-title-input');
-    let setTitles = [];
-
-    for (let input of inputs) {
-        if (input.value.trim() === "") {
-            alert('Please enter titles for all sets.');
-            return;
-        }
-        setTitles.push(input.value.trim());
-    }
-
-    console.log("Collected setTitles in onGenerateClicked:", setTitles); // Debugging line
-
-    if (setTitles.length >= 2) {
-        const intersections = calculateIntersections(setTitles);
-        generateAndDisplayText(intersections, setTitles);
-    } else {
-        alert('Please enter titles for at least two sets.');
-    }
-}
-
-
 // Assuming you have a function to make the POST request and fetch the responses
 function generateAndDisplayText(intersections, setTitles) {
     console.log("Received setTitles:", setTitles);
@@ -239,8 +234,8 @@ function generateAndDisplayText(intersections, setTitles) {
         .then(data => {
             if (data && !data.error) {
                 for (let key in data) {
-                    let intersectionKey = key.split(", ");
-                    displayTextAtIntersection(intersectionKey, data[key], intersectionTitles.length, setTitles);
+                    // Display text directly at a predefined position
+                    displayTextDirectly(data[key]);
                 }
             } else {
                 console.error("Error received from API:", data.error);
@@ -251,31 +246,27 @@ function generateAndDisplayText(intersections, setTitles) {
 }
 
 
-// Global variable for positions (if needed)
-let positions = {};
-
-// Function to display text at the intersection
-function displayTextAtIntersection(intersection, text) {
+// Function to display text directly
+function displayTextDirectly(text) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
+    const textElement = document.createElementNS(svgNS, "text");
 
-    // Format the key to match the format used in 'positions'
-    const key = intersection.join(', ');
+    // Set attributes for the text element
+    textElement.setAttribute('x', 150); // Central X position for 2 sets
+    textElement.setAttribute('y', 150); // Central Y position for 2 sets
+    textElement.setAttribute('font-size', '16');
+    textElement.setAttribute('text-anchor', 'middle');
+    textElement.setAttribute('dominant-baseline', 'middle');
+    textElement.setAttribute('fill', '#333');
+    textElement.textContent = text;
 
-    // Check if the position for this intersection is defined
-    if (positions[key]) {
-        const position = positions[key];
-        const textElement = document.createElementNS(svgNS, "text");
-        textElement.setAttribute('x', position.x);
-        textElement.setAttribute('y', position.y);
-        textElement.setAttribute('text-anchor', 'middle');
-        textElement.setAttribute('dominant-baseline', 'middle');
-        textElement.textContent = text;
-        svg.appendChild(textElement);
-    } else {
-        console.log("Position not found for intersection:", key);
-    }
+    svg.appendChild(textElement);
 }
+
+
+// Global variable for positions (if needed)
+let positions = {};
 
 
 // Handles the Generate button click
