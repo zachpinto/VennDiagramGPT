@@ -203,8 +203,8 @@ function calculateXPosition(index, setCount) {
     if (setCount === 2) {
         return index === 0 ? 75 : 225;
     } else if (setCount === 3) {
-        if (index === 0) return 80;
-        if (index === 1) return 220;
+        if (index === 0) return 70;
+        if (index === 1) return 230;
         return 150;
     }
 }
@@ -216,7 +216,7 @@ function calculateYPosition(index, setCount) {
         return 150; //
     } else if (setCount === 3) {
         if (index === 0 || index === 1) return 95;
-        return 220;
+        return 230;
     }
 }
 
