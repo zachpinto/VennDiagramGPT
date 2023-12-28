@@ -35,17 +35,6 @@ def get_combinations(set_titles):
                 (set_titles[0], set_titles[2]),
                 (set_titles[1], set_titles[2]),
                 (set_titles[0], set_titles[1], set_titles[2])]
-    elif len(set_titles) == 4:
-        # Venn diagram with 4 sets
-        return [(set_titles[0], set_titles[1]),
-                (set_titles[1], set_titles[2]),
-                (set_titles[2], set_titles[3]),
-                (set_titles[0], set_titles[3]),
-                (set_titles[0], set_titles[1], set_titles[3]),
-                (set_titles[0], set_titles[1], set_titles[2]),
-                (set_titles[1], set_titles[2], set_titles[3]),
-                (set_titles[0], set_titles[2], set_titles[3]),
-                (set_titles[0], set_titles[1], set_titles[2], set_titles[3])]
     else:
         return []
 
@@ -56,7 +45,8 @@ def generate_text():
     set_titles = data.get('setTitles')
 
     # Check for None or empty values in set_titles
-    if not set_titles or not all(set_titles) or not isinstance(set_titles, list) or len(set_titles) < 2 or len(set_titles) > 4:
+    if (not set_titles or not all(set_titles) or not isinstance(set_titles, list) or
+            len(set_titles) < 2 or len(set_titles) > 4):
         print("Invalid input:", set_titles)
         return jsonify({"error": "Invalid input. Set titles must be a list with 2 to 4 non-empty elements."}), 400
     try:
