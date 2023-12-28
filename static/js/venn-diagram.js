@@ -128,17 +128,55 @@ function updateVennDiagram(setCount, vennDiagramContainer) {
     for (let i = 0; i < setCount; i++) {
         let input = document.querySelector(`input[name="setTitle${i}"]`);
         if (input && input.value) {
-            let text = document.createElementNS(svgNS, "text");
-            text.textContent = input.value;
-            text.setAttribute('x', calculateXPosition(i, setCount));
-            text.setAttribute('y', calculateYPosition(i, setCount));
-            text.setAttribute('font-size', '10');
-            text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('fill', '#333');
-            vennDiagramContainer.querySelector('svg').appendChild(text);
+            const textElement = document.createElementNS(svgNS, "text");
+            const wrappedText = wrapText(input.value, 80); // Adjust the max width as needed
+
+            wrappedText.forEach((line, index) => {
+                const tspan = document.createElementNS(svgNS, "tspan");
+                tspan.setAttribute('x', calculateXPosition(i, setCount));
+                tspan.setAttribute('y', calculateYPosition(i, setCount) + (index * 12)); // Adjust line height as needed
+                tspan.textContent = line;
+                textElement.appendChild(tspan);
+            });
+
+            textElement.setAttribute('font-size', '10');
+            textElement.setAttribute('text-anchor', 'middle');
+            textElement.setAttribute('dominant-baseline', 'middle');
+            textElement.setAttribute('fill', '#333');
+            vennDiagramContainer.querySelector('svg').appendChild(textElement);
         }
     }
+}
+
+
+// Wraps the text based on the max width
+function wrapText(text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+        const word = words[i];
+        const width = getTextWidth(currentLine + " " + word);
+        if (width < maxWidth) {
+            currentLine += " " + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
+
+// Gets the width of the text
+function getTextWidth(text) {
+    // Create a temporary canvas to measure text width
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    context.font = "10px Arial"; // Set the font to match your SVG text
+    return context.measureText(text).width;
 }
 
 
@@ -163,16 +201,11 @@ function calculateIntersections(setTitles) {
 function calculateXPosition(index, setCount) {
     // Simple example logic, needs refinement based on actual Venn diagram layout
     if (setCount === 2) {
-        return index === 0 ? 80 : 220;
+        return index === 0 ? 75 : 225;
     } else if (setCount === 3) {
         if (index === 0) return 80;
         if (index === 1) return 220;
         return 150;
-    } else { // setCount === 4
-        if (index === 0) return 150;
-        if (index === 1) return 80;
-        if (index === 2) return 150;
-        return 220;
     }
 }
 
@@ -181,15 +214,10 @@ function calculateXPosition(index, setCount) {
 function calculateYPosition(index, setCount) {
     // Simple example logic, needs refinement based on actual Venn diagram layout
     if (setCount === 2) {
-        return 150; // Middle for both
+        return 140; // Middle for both
     } else if (setCount === 3) {
-        if (index === 0 || index === 1) return 110;
+        if (index === 0 || index === 1) return 95;
         return 220;
-    } else { // setCount === 4
-        if (index === 0) return 80;
-        if (index === 1) return 150;
-        if (index === 2) return 220;
-        return 150;
     }
 }
 
