@@ -62,8 +62,6 @@ function populatePositions(setCount, setTitles) {
         // Position for all three
         positions[`${setTitles[0]} and ${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 150 }; // Changed format to 'and'
     }
-    // Add more logic for 4 sets...
-    console.log('Populated positions:', positions);
 }
 
 
@@ -96,10 +94,6 @@ function generateVennDiagram(setCount, vennDiagramContainer) {
         3: [{ cx: 110, cy: 120, r: 80 },
             { cx: 190, cy: 120, r: 80 },
             { cx: 150, cy: 190, r: 80 }],
-        4: [{ cx: 150, cy: 110, r: 60 },
-            { cx: 110, cy: 150, r: 60 },
-            { cx: 150, cy: 190, r: 60 },
-            { cx: 190, cy: 150, r: 60 }]
     };
 
     circleConfigs[setCount].forEach((circle, index) => {
@@ -155,6 +149,10 @@ function calculateIntersections(setTitles) {
         for (let j = i + 1; j < setTitles.length; j++) {
             intersections.push([i, j]);
         }
+    }
+    // Add combination for all sets in case of three sets
+    if (setTitles.length === 3) {
+        intersections.push([0, 1, 2]); // Intersection of all three sets
     }
     console.log("Calculated intersections in calculateIntersections:", intersections);
     return intersections;
@@ -215,9 +213,13 @@ function generateAndDisplayText(intersections, setTitles) {
     console.log("Received setTitles:", setTitles);
     console.log("Intersections:", intersections);
 
+    const setCount = setTitles.length; // Number of sets
+
     intersections.forEach(intersectionIndices => {
         let intersectionTitles = intersectionIndices.map(index => setTitles[index]);
+        let intersectionKey = intersectionIndices.map(i => i.toString()).join(' and ');
         console.log("Processing intersection:", intersectionTitles);
+
         // Check for null or empty titles
         if (intersectionTitles.some(title => !title)) {
             console.error("Invalid intersection format: One or more titles are empty", intersectionTitles);
@@ -233,10 +235,9 @@ function generateAndDisplayText(intersections, setTitles) {
         .then(response => response.json())
         .then(data => {
             if (data && !data.error) {
-                for (let key in data) {
-                    // Display text directly at a predefined position
-                    displayTextDirectly(data[key]);
-                }
+                // Ensure the correct key is used for displaying text
+                const responseKey = intersectionTitles.join(' and ');
+                displayTextDirectly(data[responseKey], setCount, intersectionKey);
             } else {
                 console.error("Error received from API:", data.error);
             }
@@ -247,15 +248,28 @@ function generateAndDisplayText(intersections, setTitles) {
 
 
 // Function to display text directly
-function displayTextDirectly(text) {
+function displayTextDirectly(text, setCount, intersectionKey) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
     const textElement = document.createElementNS(svgNS, "text");
 
-    // Set attributes for the text element
-    textElement.setAttribute('x', 150); // Central X position for 2 sets
-    textElement.setAttribute('y', 150); // Central Y position for 2 sets
-    textElement.setAttribute('font-size', '16');
+    let xPosition, yPosition;
+    if (setCount === 2) {
+        xPosition = 150; yPosition = 150; // Central position for 2 sets
+    } else if (setCount === 3) {
+        // Adjust positions based on intersection key
+        switch (intersectionKey) {
+            case '0 and 1': xPosition = 100; yPosition = 180; break;
+            case '0 and 2': xPosition = 200; yPosition = 180; break;
+            case '1 and 2': xPosition = 150; yPosition = 90; break;
+            case '0 and 1 and 2': xPosition = 150; yPosition = 150; break; // Central position for all three sets
+            default: xPosition = 150; yPosition = 150; // Fallback position
+        }
+    }
+
+    textElement.setAttribute('x', xPosition);
+    textElement.setAttribute('y', yPosition);
+    textElement.setAttribute('font-size', '6');
     textElement.setAttribute('text-anchor', 'middle');
     textElement.setAttribute('dominant-baseline', 'middle');
     textElement.setAttribute('fill', '#333');
