@@ -5,14 +5,14 @@ const svgNS = "http://www.w3.org/2000/svg";
 // Handles changes to the radio buttons
 function handleRadioChange(event, textFieldsContainer) {
     const count = parseInt(event.target.value, 10);
-    textFieldsContainer.innerHTML = ''; // Clear existing fields
+    textFieldsContainer.innerHTML = '';
 
     for (let i = 0; i < count; i++) {
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `Title for set ${i + 1}`;
-        input.className = 'form-control my-2 set-title-input'; // Add a class for easy selection
-        input.name = `setTitle${i}`; // Assign name attribute
+        input.className = 'form-control my-2 set-title-input';
+        input.name = `setTitle${i}`;
         textFieldsContainer.appendChild(input);
     }
 
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         radio.addEventListener('change', function(event) {
             handleRadioChange(event, textFieldsContainer);
             generateVennDiagram(parseInt(event.target.value), vennDiagramContainer);
-            setupInputListeners(vennDiagramContainer, parseInt(event.target.value)); // Corrected
+            setupInputListeners(vennDiagramContainer, parseInt(event.target.value));
         });
     });
 
@@ -53,14 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function populatePositions(setCount, setTitles) {
     positions = {};
     if (setCount === 2) {
-        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 150, y: 150 }; // Central intersection point for 2 sets
+        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 150, y: 150 };
     } else if (setCount === 3) {
-        // Example positions for 3-set intersections
-        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 100, y: 150 }; // Changed format to 'and'
-        positions[`${setTitles[0]} and ${setTitles[2]}`] = { x: 200, y: 150 }; // Changed format to 'and'
-        positions[`${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 200 }; // Changed format to 'and'
-        // Position for all three
-        positions[`${setTitles[0]} and ${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 150 }; // Changed format to 'and'
+
+        positions[`${setTitles[0]} and ${setTitles[1]}`] = { x: 100, y: 150 };
+        positions[`${setTitles[0]} and ${setTitles[2]}`] = { x: 200, y: 150 };
+        positions[`${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 200 };
+
+        positions[`${setTitles[0]} and ${setTitles[1]} and ${setTitles[2]}`] = { x: 150, y: 150 };
     }
 }
 
@@ -82,7 +82,7 @@ function generateVennDiagram(setCount, vennDiagramContainer) {
         svg.setAttribute('viewBox', '0 0 300 300');
         vennDiagramContainer.appendChild(svg);
     } else {
-        // Clear previous circles if they exist
+
         while (svg.firstChild) {
             svg.removeChild(svg.firstChild);
         }
@@ -129,12 +129,12 @@ function updateVennDiagram(setCount, vennDiagramContainer) {
         let input = document.querySelector(`input[name="setTitle${i}"]`);
         if (input && input.value) {
             const textElement = document.createElementNS(svgNS, "text");
-            const wrappedText = wrapText(input.value, 80); // Adjust the max width as needed
+            const wrappedText = wrapText(input.value, 80);
 
             wrappedText.forEach((line, index) => {
                 const tspan = document.createElementNS(svgNS, "tspan");
                 tspan.setAttribute('x', calculateXPosition(i, setCount));
-                tspan.setAttribute('y', calculateYPosition(i, setCount) + (index * 12)); // Adjust line height as needed
+                tspan.setAttribute('y', calculateYPosition(i, setCount) + (index * 12));
                 tspan.textContent = line;
                 textElement.appendChild(tspan);
             });
@@ -172,10 +172,10 @@ function wrapText(text, maxWidth) {
 
 // Gets the width of the text
 function getTextWidth(text) {
-    // Create a temporary canvas to measure text width
+
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
-    context.font = "10px Arial"; // Set the font to match your SVG text
+    context.font = "10px Arial";
     return context.measureText(text).width;
 }
 
@@ -188,9 +188,9 @@ function calculateIntersections(setTitles) {
             intersections.push([i, j]);
         }
     }
-    // Add combination for all sets in case of three sets
+
     if (setTitles.length === 3) {
-        intersections.push([0, 1, 2]); // Intersection of all three sets
+        intersections.push([0, 1, 2]);
     }
     console.log("Calculated intersections in calculateIntersections:", intersections);
     return intersections;
@@ -199,7 +199,7 @@ function calculateIntersections(setTitles) {
 
 // Calculates the X position of the text based on the index and setCount
 function calculateXPosition(index, setCount) {
-    // Simple example logic, needs refinement based on actual Venn diagram layout
+
     if (setCount === 2) {
         return index === 0 ? 75 : 225;
     } else if (setCount === 3) {
@@ -212,9 +212,8 @@ function calculateXPosition(index, setCount) {
 
 // Calculates the Y position of the text based on the index and setCount
 function calculateYPosition(index, setCount) {
-    // Simple example logic, needs refinement based on actual Venn diagram layout
     if (setCount === 2) {
-        return 140; // Middle for both
+        return 150; //
     } else if (setCount === 3) {
         if (index === 0 || index === 1) return 95;
         return 220;
@@ -236,25 +235,29 @@ function getCombinations(array, size) {
 }
 
 
-// Assuming you have a function to make the POST request and fetch the responses
+// Function to generate and display text on the Venn diagram
 function generateAndDisplayText(intersections, setTitles) {
     console.log("Received setTitles:", setTitles);
     console.log("Intersections:", intersections);
 
-    const setCount = setTitles.length; // Number of sets
+    const setCount = setTitles.length;
+    const loadingIndicator = document.getElementById('loadingIndicator');
 
     intersections.forEach(intersectionIndices => {
         let intersectionTitles = intersectionIndices.map(index => setTitles[index]);
         let intersectionKey = intersectionIndices.map(i => i.toString()).join(' and ');
         console.log("Processing intersection:", intersectionTitles);
 
-        // Check for null or empty titles
+
         if (intersectionTitles.some(title => !title)) {
             console.error("Invalid intersection format: One or more titles are empty", intersectionTitles);
             return;
         }
 
-        // Proceed with valid intersections
+
+        loadingIndicator.style.display = 'block';
+
+
         fetch('/generate-text', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -262,20 +265,27 @@ function generateAndDisplayText(intersections, setTitles) {
         })
         .then(response => response.json())
         .then(data => {
+
+            loadingIndicator.style.display = 'none';
+
             if (data && !data.error) {
-                // Ensure the correct key is used for displaying text
+
                 const responseKey = intersectionTitles.join(' and ');
                 displayTextDirectly(data[responseKey], setCount, intersectionKey);
             } else {
                 console.error("Error received from API:", data.error);
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+
+            loadingIndicator.style.display = 'none';
+            console.error('Error:', error)
+        });
     });
 }
 
 
-// Function to display text directly
+// Function to explicitly display text directly with explicit coordinates
 function displayTextDirectly(text, setCount, intersectionKey) {
     const vennDiagramContainer = document.getElementById('vennDiagramContainer');
     const svg = vennDiagramContainer.querySelector('svg');
@@ -285,13 +295,13 @@ function displayTextDirectly(text, setCount, intersectionKey) {
     if (setCount === 2) {
         xPosition = 150; yPosition = 150; // Central position for 2 sets
     } else if (setCount === 3) {
-        // Adjust positions based on intersection key
+
         switch (intersectionKey) {
             case '0 and 1': xPosition = 100; yPosition = 180; break;
             case '0 and 2': xPosition = 200; yPosition = 180; break;
             case '1 and 2': xPosition = 150; yPosition = 90; break;
-            case '0 and 1 and 2': xPosition = 150; yPosition = 150; break; // Central position for all three sets
-            default: xPosition = 150; yPosition = 150; // Fallback position
+            case '0 and 1 and 2': xPosition = 150; yPosition = 150; break;
+            default: xPosition = 150; yPosition = 150;
         }
     }
 
@@ -317,7 +327,7 @@ function handleGenerateButtonClick() {
     let setTitles = [];
 
     for (let input of inputs) {
-        console.log("Input value:", input.value); // Add this line for debugging
+        console.log("Input value:", input.value);
         if (input.value.trim() === "") {
             alert('Please enter titles for all sets.');
             return;
@@ -325,7 +335,7 @@ function handleGenerateButtonClick() {
         setTitles.push(input.value.trim());
     }
 
-    console.log("Collected setTitles:", setTitles); // Debugging line
+    console.log("Collected setTitles:", setTitles);
 
     if (setTitles.length >= 2) {
         const intersections = calculateIntersections(setTitles);

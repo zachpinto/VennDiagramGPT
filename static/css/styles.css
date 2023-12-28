@@ -7,18 +7,18 @@ body {
 }
 
 h1#title {
-    position: fixed; /* Fixed positioning relative to the viewport */
-    top: 2%; /* Adjust as necessary to position above the input box */
-    left: 55px; /* Align with the input box */
+    position: fixed;
+    top: 2%;
+    left: 55px;
     color: #333;
     font-size: 50px;
     margin: 0;
 }
 
 h2#subtitle {
-    position: fixed; /* Fixed positioning relative to the viewport */
-    top: 11%; /* Position it just below the title */
-    left: 65px; /* Align with the input box */
+    position: fixed;
+    top: 11%;
+    left: 65px;
     color: #666;
     font-size: 22px;
     margin: 0;
@@ -40,14 +40,14 @@ h2#subtitle {
 }
 
 .radio-instructions {
-    font-size: 20px; /* Smaller font size */
-    font-style: italic; /* Italicize text */
-    color: #666; /* Gray color, similar to the numbers */
-    text-align: center; /* Center align */
-    margin-bottom: 20px; /* Space above the radio buttons */
+    font-size: 20px;
+    font-style: italic;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* Custom toggle button styles */
+
 .tgl-light {
     display: none;
 }
@@ -73,11 +73,11 @@ h2#subtitle {
     background: #fff;
     transition: all .2s ease;
     top: 0.2em;
-    left: 0.2em; /* Initial position of the circle */
+    left: 0.2em;
 }
 
 .tgl-light:checked + .tgl-btn:after {
-    left: calc(100% - 1.8em); /* Move circle to the right when checked */
+    left: calc(100% - 1.8em);
 }
 
 .radio-button-container {
@@ -100,23 +100,23 @@ h2#subtitle {
 }
 
 .tgl-light:checked + .tgl-btn {
-    background: #4CAF50; /* A green shade for active state */
+    background: #4CAF50;
 }
 
 #textFields textarea {
-    width: 100%; /* Full width */
-    height: auto; /* Height adjusts to content */
-    min-height: 40px; /* Minimum height for two lines */
+    width: 100%;
+    height: auto;
+    min-height: 40px;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
     box-sizing: border-box;
-    resize: vertical; /* Allow vertical resizing only */
+    resize: vertical;
 }
 
 
 button {
-    background-color: #4CAF50; /* Same as the active state color */
+    background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -135,8 +135,8 @@ button:hover {
     left: 30%;
     top: 50%;
     transform: translateY(-50%);
-    width: 60vw; /* Adjusted width for consistency */
-    height: 60vw; /* Adjusted height for consistency */
+    width: 60vw;
+    height: 60vw;
     z-index: 1;
     border-radius: 5px;
 }
@@ -145,4 +145,11 @@ button:hover {
     width: 100%;
     height: 100%;
     display: block;
+}
+
+.loading-indicator {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
 }
