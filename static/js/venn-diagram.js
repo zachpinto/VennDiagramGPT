@@ -297,9 +297,9 @@ function displayTextDirectly(text, setCount, intersectionKey) {
     } else if (setCount === 3) {
 
         switch (intersectionKey) {
-            case '0 and 1': xPosition = 100; yPosition = 180; break;
-            case '0 and 2': xPosition = 200; yPosition = 180; break;
-            case '1 and 2': xPosition = 150; yPosition = 90; break;
+            case '0 and 1': xPosition = 150; yPosition = 90; break;
+            case '0 and 2': xPosition = 100; yPosition = 180; break;
+            case '1 and 2': xPosition = 200; yPosition = 180; break;
             case '0 and 1 and 2': xPosition = 150; yPosition = 150; break;
             default: xPosition = 150; yPosition = 150;
         }
