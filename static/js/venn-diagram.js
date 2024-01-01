@@ -317,7 +317,7 @@ function displayTextDirectly(text, setCount, intersectionKey) {
 }
 
 
-// Global variable for positions (if needed)
+// Global variable for positions
 let positions = {};
 
 
