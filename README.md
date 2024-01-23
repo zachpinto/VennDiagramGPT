@@ -1,7 +1,7 @@
 # VennDiagramGPT
 
 ## Description
-VennDiagramGPT is a web-based application that leverages OpenAI's GPT-4 to generate creative and insightful relationships between different sets in a Venn diagram. This project combines Flask for backend operations with advanced JavaScript and SVG manipulation for frontend interactivity, offering users a unique tool to explore and visualize complex data relationships.
+VennDiagramGPT is a web-based application that leverages OpenAI's GPT-4 to generate creative and insightful relationships between different sets in a Venn diagram. This project combines Flask for backend operations with advanced JavaScript and SVG manipulation for frontend interactivity, offering users a unique and fun tool to create comparisons between different topics!
 
 ## Features
 - **Interactive Venn Diagram**: Users can choose between a 2-set or 3-set Venn diagram.
