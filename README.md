@@ -47,5 +47,5 @@ Contributions, issues, and feature requests are welcome. Feel free to check [iss
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
-- OpenAI for providing the GPT-4 API.
-- All contributors who participate in this project.
+- OpenAI for providing the GPT-4 API
+  
